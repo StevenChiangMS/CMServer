@@ -138,7 +138,7 @@ app.get('/api/:instrument',async (req, res) => {
   //   "Content-Type": "application/json",
   //   "Access-Control-Allow-Origin": "*",
   // });
-  res.json(dbTeacher);
+  res.json("OK");
 });
 
 app.get('/api/signUp/inquire/:id',async (req, res) => {
