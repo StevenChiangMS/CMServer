@@ -319,7 +319,7 @@ app.post("/api/teacher", upload.single("imgTeacher"), async (req, res) => {
         imgType: req.file.mimetype
         // image: Buffer.from(base64img, "base64")
       })
-      // await teacherInformation.save();
+      await teacherInformation.save();
       res.json({
         name: teacherInformation.name,
         instrument: teacherInformation.instrument,
