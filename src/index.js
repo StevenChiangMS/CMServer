@@ -87,11 +87,15 @@ const SignUpSchema = new Schema({
   gender: { type: String, required: true },
   email: { type: String, required: true },
   birthday: { type: String, required: true },
+  addressCounty: { type: String, required: true },
+  addressDistrict: { type: String, required: true },
+  addressZip: { type: String, required: true },
   address: { type: String, required: true },
   id: { type: String, required: true },
   roman: { type: String, required: true },
   school: { type: String, required: true },
   grade: { type: String, required: true },
+  graded: { type: String, required: true },
   phone: { type: String, required: true },
   fatherName: { type: String },
   fatherPhone: { type: String },
@@ -103,8 +107,7 @@ const SignUpSchema = new Schema({
   experience: { type: String, required: true },
   track: { type: String, required: true },
   specify: { type: String },
-  payTeamInstrument: { type: Array, required: true },
-  payTeamPiano: { type: Array, required: true },
+  payCheckbox: { type: Array, required: true },
   friend1: { type: String },
   friend2: { type: String },
   friend3: { type: String },
@@ -280,7 +283,7 @@ app.post('/api/contactUs',async (req, res) => {
     //   " 信箱: " + contactUs.email + 
     //   " 電話: " + contactUs.phone + 
     //   " 回覆內容: " + contactUs.reqText,
-    html: `<h2>${contactUs.firstName + " " + contactUs.lastName + "回報內容"}</h2><br /><div>${"信箱: " + contactUs.email}</div><br /><div>${"電話: " + contactUs.phone}</div><br /><div>${"回覆內容: " + contactUs.reqText}</div>`
+    html: `<h2>${contactUs.lastName + contactUs.firstName + " " + "回報內容"}</h2><br /><div>${"信箱: " + contactUs.email}</div><br /><div>${"電話: " + contactUs.phone}</div><br /><div>${"回覆內容: " + contactUs.reqText}</div>`
   };
 
   client.sendMail(mailOtions, (err, data) => {
@@ -339,7 +342,7 @@ app.post("/api/teacher", upload.single("imgTeacher"), async (req, res) => {
 app.put("/api/update/:id", async (req, res) => {
 
   try{
-    let SignUp = await SIGNUP.findByIdAndUpdate(req.body.state._id, req.body.state, { new: true });
+    let SignUp = await SIGNUP.findOneAndUpdate(req.body.state._id, req.body.state, { new: true });
 
     console.log(SignUp);
     res.json("OK");
