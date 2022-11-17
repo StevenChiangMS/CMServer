@@ -129,10 +129,15 @@ app.get('/', (req, res) => {
   res.sendFile(__dirname + '/index.html')
 });
 
+app.get('/delete', (req, res) => {
+  res.sendFile(__dirname + '/delete.html')
+});
+
+
 app.get('/api/:instrument',async (req, res) => {
   // console.log("樂器:", req.params.instrument);
   // console.log("IP:", req.ip);
-
+  console.log("delete:", req.params);
   let dbTeacher = await TEACHER.find(
     // {instrument: req.params.instrument}
     );
@@ -300,12 +305,8 @@ app.post('/api/contactUs',async (req, res) => {
 });
 
 app.post("/api/teacher", upload.single("imgTeacher"), async (req, res) => {
-  // console.log("/api/teacher (Create)");
-  // console.log("req.file:", req.file);
   const img = fs.readFileSync(req.file.path);
-  console.log("img:", img, "END");
   const base64img = img.toString("base64");
-  // console.log(base64img);
   const x = Buffer.from(base64img, "base64");
   console.log("新增一筆師資");
 
@@ -340,6 +341,26 @@ app.post("/api/teacher", upload.single("imgTeacher"), async (req, res) => {
   }
 })
 
+app.delete("/api/teacher", async (req, res) => {
+  console.log("delete:", req.body.teachername);
+  try {
+    let teachername = await TEACHER.find(
+      {name: req.body.teachername}
+    );
+    if (teachername.length === 1) {
+      teachername = await TEACHER.deleteMany({name: req.body.teachername});
+      console.log(teachername);
+      res.json("刪除成功");
+      return
+    }
+    res.json("無資料");
+    return console.log("無資料");
+  } catch(err) {
+    console.log(err);
+    res.json(err);
+  }
+});
+
 app.put("/api/update/:id", async (req, res) => {
 
   try{
@@ -355,7 +376,7 @@ app.put("/api/update/:id", async (req, res) => {
   
 
   
-})
+});
 
 app.listen(port, () => {
   console.log(`Listening on port http://localhost:${port}`);

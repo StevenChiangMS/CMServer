@@ -17,13 +17,37 @@
 
     <input type="submit" value="Submit" />
   </form>
-  <!-- <form  action="/api/img" method="get">
+  <br /><hr />
 
-  <img src="data:image/jpeg;base64" alt="1"/>
-  <input type="submit" value="Submit" />
-</form> -->
+  <form >
+    <h3>Delete Teacher</h3>
+    <p><code>DELETE /api/teacher</code></p>
+    <input class="tname" id="tname" type="text" name="teachername" placeholder="老師姓名" /><br />
+    <input type="button" value="delete" onclick=deleteTeacher() />
+  </form>
+  <br /><hr />
+
+<script>
+  
+  const deleteTeacher = () => {
+    let name = document.getElementsByClassName('tname');
+
+    fetch("/api/teacher", {
+      method: "DELETE",
+      body: JSON.stringify({
+        teachername: name[0].value
+      }),
+      headers: {
+        'Content-Type': 'application/json'
+      },
+    })
+    .then((res) => res.json())
+    .then((data) => alert(data))
+    .catch((err) => console.log("error:", err));
+  };
+
+
+</script>
 
 </body>
 </html>
-
-<!-- MONGO_URI='mongodb+srv://steven:1234@cluster0.mioy8ik.mongodb.net/CMserverDB?retryWrites=true&w=majority' -->
