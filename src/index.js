@@ -137,7 +137,6 @@ app.get('/delete', (req, res) => {
 app.get('/api/:instrument',async (req, res) => {
   // console.log("樂器:", req.params.instrument);
   // console.log("IP:", req.ip);
-  console.log("delete:", req.params);
   let dbTeacher = await TEACHER.find(
     // {instrument: req.params.instrument}
     );
@@ -325,13 +324,15 @@ app.post("/api/teacher", upload.single("imgTeacher"), async (req, res) => {
         // image: Buffer.from(base64img, "base64")
       })
       await teacherInformation.save();
-      res.json({
-        name: teacherInformation.name,
-        instrument: teacherInformation.instrument,
-        introduction: teacherInformation.introduction,
-        image: teacherInformation.image,
-        imgType: teacherInformation.imgType
-      });
+      // res.json({
+      //   name: teacherInformation.name,
+      //   instrument: teacherInformation.instrument,
+      //   introduction: teacherInformation.introduction,
+      //   image: teacherInformation.image,
+      //   imgType: teacherInformation.imgType
+      // });
+      res.json("新增成功");
+
     }else {
       res.json({});
     }
@@ -339,17 +340,43 @@ app.post("/api/teacher", upload.single("imgTeacher"), async (req, res) => {
     console.log(err);
     res.json();
   }
-})
+});
+
+app.put("/api/teacher", upload.single("updateImgTeacher"), async (req, res) => {
+
+  const state = {
+    instrument: req.body.instrument,
+    introduction: req.body.introduction
+  };
+
+  try {
+    let teachername = await TEACHER.find(
+      {name: req.body.teachername}
+    );
+    console.log("teachername:", teachername[0].name , "END");
+
+    if (teachername.length === 1) {
+      let teacher = await TEACHER.findOneAndUpdate({name: teachername[0].name}, state, { new: true });
+      console.log("更新成功");
+      res.json("更新成功");
+      return
+    }
+    res.json("無資料");
+    return console.log("無資料");
+  } catch(err) {
+    console.log(err);
+    res.json(err);
+  }
+});
 
 app.delete("/api/teacher", async (req, res) => {
-  console.log("delete:", req.body.teachername);
   try {
     let teachername = await TEACHER.find(
       {name: req.body.teachername}
     );
     if (teachername.length === 1) {
       teachername = await TEACHER.deleteMany({name: req.body.teachername});
-      console.log(teachername);
+      console.log("刪除成功");
       res.json("刪除成功");
       return
     }
@@ -373,9 +400,6 @@ app.put("/api/update/:id", async (req, res) => {
     console.log(err);
     res.json(err);
   }
-  
-
-  
 });
 
 app.listen(port, () => {

@@ -13,7 +13,7 @@
     <input id="tname" type="text" name="teachername" placeholder="老師姓名" /><br />
     <input id="instrument" type="text" name="instrument" placeholder="樂器" /><br />
     <input id="imgTeacher" type="file" name="imgTeacher"><br />
-    <textarea id="instrument" type="text" name="introduction" placeholder="簡介" style="width: 100%;height: 100%;" ></textarea><br />
+    <textarea id="introduction" type="text" name="introduction" placeholder="簡介" style="width: 100%;height: 100%;" ></textarea><br />
 
     <input type="submit" value="Submit" />
   </form>
@@ -22,20 +22,57 @@
   <form >
     <h3>Delete Teacher</h3>
     <p><code>DELETE /api/teacher</code></p>
-    <input class="tname" id="tname" type="text" name="teachername" placeholder="老師姓名" /><br />
+    <input class="deleteTeacherName" id="tname" type="text" name="teachername" placeholder="老師姓名" /><br />
     <input type="button" value="delete" onclick=deleteTeacher() />
   </form>
   <br /><hr />
 
-<script>
-  
-  const deleteTeacher = () => {
-    let name = document.getElementsByClassName('tname');
+  <form enctype="multipart/form-data">
+    <h3>Update Teacher</h3>
+    <p><code>UPDATE /api/teacher</code></p>
 
+    <div>需更改的資料姓名</div>
+    <input class="updateTeacherName" id="tname" type="text" name="teachername" placeholder="老師姓名" /><br /><hr />
+    <input class="updateInstrument" id="instrument" type="text" name="instrument" placeholder="樂器" /><br />
+    <!-- <input class="updateImgTeacher" id="updateImgTeacher" type="file" name="updateImgTeacher"><br /> -->
+    <textarea class="updateIntroduction" id="introduction" type="text" name="introduction" placeholder="簡介" style="width: 100%;height: 100%;" ></textarea><br />
+    <input type="button" value="update" onclick=updateTeacher() />
+  </form>
+  <br /><hr />
+
+<script>
+
+
+// delete api
+  const deleteTeacher = () => {
+    const name = document.getElementsByClassName('deleteTeacherName');
     fetch("/api/teacher", {
       method: "DELETE",
       body: JSON.stringify({
         teachername: name[0].value
+      }),
+      headers: {
+        'Content-Type': 'application/json'
+      },
+    })
+    .then((res) => res.json())
+    .then((data) => alert(data))
+    .catch((err) => console.log("error:", err));
+  };
+
+// update api
+  const updateTeacher = () => {
+    const name = document.getElementsByClassName('updateTeacherName')[0].value;
+    const instrument = document.getElementsByClassName('updateInstrument')[0].value;
+    const introduction = document.getElementsByClassName('updateIntroduction')[0].value;
+    // const imgTeacher = document.getElementById('updateImgTeacher');
+
+    fetch("/api/teacher", {
+      method: "PUT",
+      body: JSON.stringify({
+        teachername: name,
+        instrument: instrument,
+        introduction: introduction,
       }),
       headers: {
         'Content-Type': 'application/json'
