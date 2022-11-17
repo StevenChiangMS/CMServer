@@ -153,6 +153,7 @@ app.get('/api/signUp/inquire/:id',async (req, res) => {
         console.log("無資料");
         return res.json("無資料");
       }
+      console.log(req.params.id + " 查詢資料");
       return res.json(dbInquire);
     } catch (e) {
       console.log(e)
@@ -306,7 +307,7 @@ app.post("/api/teacher", upload.single("imgTeacher"), async (req, res) => {
   const base64img = img.toString("base64");
   // console.log(base64img);
   const x = Buffer.from(base64img, "base64");
-  console.log(x);
+  console.log("新增一筆師資");
 
   const name = req.body.teachername;
   const instrument = req.body.instrument;
@@ -343,8 +344,8 @@ app.put("/api/update/:id", async (req, res) => {
 
   try{
     let SignUp = await SIGNUP.findOneAndUpdate(req.body.state._id, req.body.state, { new: true });
+    console.log("更改一筆申請表單");
 
-    console.log(SignUp);
     res.json("OK");
     res.end();
   } catch(err) {
