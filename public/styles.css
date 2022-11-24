@@ -1,0 +1,22 @@
+
+
+body {
+  background-color: bisque;
+}
+
+.base64image {
+  height: 140px;
+}
+
+.smImgDiv {
+  text-align: center;
+}
+
+.teacher {
+  /* text-align: center; */
+  margin: auto;
+}
+
+td {
+  border: 1px red solid;
+}

@@ -22,6 +22,7 @@ const multer = require("multer");
 const cors = require("cors");
 const nodemailer = require("nodemailer");
 const fs = require("fs");
+const { json } = require("body-parser");
 
 let storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -46,7 +47,8 @@ app.use((req, res, next) => {
   next();
 });
 // app.use(cookieParser())
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.json({limit: "500mb"}))
+app.use(bodyParser.urlencoded({limit: '50mb', extended: true }));
 app.use(cors());
 app.use('/public', express.static(process.cwd() + '/public'));
 app.use(express.json());
@@ -77,6 +79,7 @@ const ContactUsSchema = new Schema({
   lastName: { type: String, required: true },
   email: { type: String, required: true },
   phone: { type: String, required: true },
+  isProcessing: { type: Boolean, required: true },
   reqText: { type: String, required: true },
 });
 const CONTACTUS = mongoose.model("CONTACTUS", ContactUsSchema);
@@ -129,8 +132,16 @@ app.get('/', (req, res) => {
   res.sendFile(__dirname + '/index.html')
 });
 
-app.get('/delete', (req, res) => {
-  res.sendFile(__dirname + '/delete.html')
+app.get('/api', (req, res) => {
+  res.sendFile(__dirname + '/get.html')
+});
+
+app.get('/api/contactUs',async (req, res) => {
+  let dbcontactus = await CONTACTUS.find(
+    // {instrument: req.params.instrument}
+    );
+
+  res.json(dbcontactus);
 });
 
 
@@ -145,6 +156,7 @@ app.get('/api/:instrument',async (req, res) => {
   //   "Content-Type": "application/json",
   //   "Access-Control-Allow-Origin": "*",
   // });
+
   res.json(dbTeacher);
 });
 
@@ -253,6 +265,34 @@ app.post('/api/signUp',async (req, res) => {
 })
 
 app.post('/api/contactUs',async (req, res) => {
+
+  if (req.body.contactUpdata) {
+    let contactInformation = req.body.contactData
+    console.log(contactInformation);
+    await contactInformation.map(async (data) => {
+      let contact_ID = await CONTACTUS.find(
+        {_id: data._id}
+      );
+      try {
+        if (!data.firstName) {
+          if (contact_ID.length === 1) {
+            let contact_ID = await CONTACTUS.deleteMany({_id: data._id});
+            console.log("後台刪除一筆");
+            return
+          }
+        } else {
+          let contact_ID = await CONTACTUS.findOneAndUpdate({_id: data._id}, data, { new: true });
+          console.log("後台更改一筆");
+          return
+        }
+      } catch(err) {
+        console.log(err);
+        res.json();
+      }
+    })
+    return res.json("contact");
+  }
+
   const sendDate = new Date().toLocaleString('zh-TW', {timeZone: 'Asia/Taipei'});
 
   if (!req.body.reqCode) {
@@ -265,6 +305,7 @@ app.post('/api/contactUs',async (req, res) => {
     lastName: req.body.lastName,
     email: req.body.email,
     phone: req.body.phone,
+    isProcessing: req.body.isProcessing,
     reqText: req.body.reqText,
   })
   await contactUs.save();
@@ -303,7 +344,54 @@ app.post('/api/contactUs',async (req, res) => {
   res.json('信件已寄出');
 });
 
+app.get('/api/teacher',async (req, res) => {
+  console.log(1);
+  res.json(1);
+})
+
 app.post("/api/teacher", upload.single("imgTeacher"), async (req, res) => {
+
+  if (req.body.updata) {
+    let teacherInformation = req.body.teacherData;
+    // teacherInformation = teacherInformation.filter(data => data !== "");
+    await teacherInformation.map(async(data) => {
+      try {
+
+        let teacher_ID = await TEACHER.find(
+          {_id: data._id}
+        );
+
+        if (data._id && (!data.name)) {
+          if (teacher_ID.length === 1) {
+            let teacher_ID = await TEACHER.deleteMany({_id: data._id});
+            console.log("後台刪除一筆");
+            return
+          }
+        } else if (data._id) {
+          let teacher = await TEACHER.findOneAndUpdate({_id: data._id}, data, { new: true });
+          console.log("後台更改一筆");
+          return
+        } else {
+            teacherInformation = new TEACHER({
+            name: data.name,
+            instrument: data.instrument,
+            introduction: data.introduction,
+            image: data.image,
+            imgType: "image/jpeg"
+          })
+          console.log("後台新增成功");
+          await teacherInformation.save();
+          return
+        }
+      } catch(err) {
+        console.log(err);
+        res.json();
+      }
+    });
+    console.log(teacherInformation);
+    return res.json("true");
+  }
+
   const img = fs.readFileSync(req.file.path);
   const base64img = img.toString("base64");
   const x = Buffer.from(base64img, "base64");

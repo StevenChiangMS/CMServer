@@ -1,0 +1,235 @@
+
+let teacherData = "";
+// get api
+  const getTeacher = (e) => {
+
+    fetch("/api/teacher")
+    .then((res) => res.json())
+    .then((data) => {
+      teacherData = data;
+      teacherData.map((data) => console.log(data.name));
+      document.querySelector(".container").innerHTML = `
+        <table class="teacherTable">
+          <thead>
+            <tr>
+              <th class="nameTh">姓名</th>
+              <th class="instrumentTh">樂器</th>
+              <th class="introductionTh">相片</th>
+              <th class="introductionTh">介紹</th>
+              <th class="introductionTh">
+                <input type="button" value="上傳資料" onclick=updata() />
+                <input type="button" value="新增資料" onclick=insertTeacher() />
+              </th>
+            </tr>
+          </thead>
+          <tbody class="tbody">
+              ${teacherData.map((data, index) => `
+                <tr class="tr${index}">
+                  <td><input 
+                    id="teacherName${index}" 
+                    class="teacher teacher${index}" 
+                    type="text" value=${data.name} 
+                    onchange=changeTeacherName(${index}) 
+                    disabled /></td>
+
+                  <td>
+                    <input 
+                      id="teacherInstrument${index}" 
+                      class="teacher teacher${index}" 
+                      type="text" 
+                      value=${data.instrument} 
+                      onchange=changeTeacherInstrument(${index}) 
+                      disabled /></td>
+
+                  <td>
+                    <div class="smImgDiv">
+                      <img 
+                        id='teacherImg${index}' 
+                        class="base64image"
+                        src=${'data:image/jpeg;base64,' + data.image}
+                        alt=${data.name}
+                      />
+                    </div>
+                      <form id='test'>
+                      <input 
+                        id='teacherImgInput${index}'
+                        class="teacher teacher${index} teacherImgInput${index}" 
+                        id="imgTeacher" 
+                        type="file" 
+                        name="imgTeacher" 
+                        onchange=changeTeacherImg(${index})
+                        disabled>
+                      </form>
+                      
+                  </td>
+
+                  <td><textarea 
+                    id="teacherIntroduction${index}" 
+                    class="teacher teacher${index}" 
+                    onchange=teacherIntroduction(${index})
+                    disabled>${data.introduction}</textarea></td>
+                    
+                  <td><input type="button" value="編輯" onclick="edit(${index})" /><input type="button" value="刪除" onclick=delet(${index}) /></td>
+                </tr>          
+              `).join("")}
+          </tbody>
+        </table>
+      `;
+      if (e) alert("取得成功");
+      return console.log(teacherData);
+    })
+    .catch((err) => console.log("error:", err));
+  };
+  // getTeacher();
+
+// insert api
+
+  const insertTeacher = () => {
+    console.log(teacherData);
+    document.querySelector(".tbody").innerHTML += `
+      <tr class="tr${teacherData.length}">
+        <td><input 
+          id="teacherName${teacherData.length}"
+          class="teacher teacher${teacherData.length}" 
+          type="text" 
+          value="" 
+          onchange=changeTeacherName(${teacherData.length}) 
+          disabled /></td>
+
+        <td>
+
+          <input 
+          id="teacherInstrument${teacherData.length}"
+          class="teacher teacher${teacherData.length} 
+          "type="text" 
+          value="" 
+          onchange=changeTeacherInstrument(${teacherData.length}) 
+          disabled /></td>
+
+        <td>
+          <div class="smImgDiv">
+            <img 
+              id='teacherImg${teacherData.length}' 
+              class="base64image"
+              src=${'data:image/jpeg;base64,' + ""}
+              alt=""
+            />
+          </div>
+          <input 
+            id="teacherImg${teacherData.length}"
+            class="teacher teacher${teacherData.length} teacherImgInput${teacherData.length}" 
+            id="imgTeacher" 
+            type="file" 
+            name="imgTeacher"
+            onchange=changeTeacherImg(${teacherData.length}) 
+            disabled>
+        </td>
+
+        <td><textarea 
+          id="teacherIntroduction${teacherData.length}"
+          class="teacher teacher${teacherData.length}" 
+          onchange=teacherIntroduction(${teacherData.length})
+          disabled></textarea></td>
+
+        <td><input type="button" value="編輯" onclick="edit(${teacherData.length})" /><input type="button" value="刪除" onclick=delet(${teacherData.length}) /></td>
+                </tr> 
+    `
+    teacherData.push({
+      name: "",
+      instrument: "",
+      introduction: "",
+      image: ""
+    });
+    console.log(teacherData);
+
+  }
+
+// updata api
+
+  const updata = () => {
+    // teacherData = teacherData.filter(data => data !== "")
+    console.log(teacherData);
+
+    fetch("/api/teacher", {
+      method: "POST",
+      body: JSON.stringify({
+        teacherData: teacherData,
+        updata: true
+      }),
+      headers: {
+        'Content-Type': 'application/json'
+      },
+    })
+    .then((res) => res.json())
+    .then((data) => {
+      alert(data);
+      // teacherData = "";
+      console.log(teacherData);
+      getTeacher();
+    })
+    .catch((err) => console.log("error:", err));
+  }
+
+  // change api
+
+  const changeTeacherName = (e) => {
+    const teacherName = document.getElementById("teacherName" + e).value;
+    teacherData[e].name = teacherName;
+    console.log(teacherData);
+  }
+
+  const changeTeacherInstrument = (e) => {
+    const teacherInstrument = document.getElementById("teacherInstrument" + e).value;
+    teacherData[e].instrument = teacherInstrument;
+    console.log(teacherData);
+  }
+
+  const teacherIntroduction = (e) => {
+    const teacherIntroduction = document.getElementById("teacherIntroduction" + e).value;
+    teacherData[e].introduction = teacherIntroduction;
+    console.log(teacherData);
+  }
+
+  const changeTeacherImg = (e) => {
+    console.log(e);
+    const teacherImgInputClass = document.getElementsByClassName("teacherImgInput" + e)[0].files[0];
+    const teacherImg = document.getElementById("teacherImg" + e);
+
+    let reader = new FileReader();
+    reader.readAsDataURL(teacherImgInputClass);
+    reader.onload = () => {
+    //  console.log(reader.result);
+    let deletDataImg = reader.result.replace("data:image/jpeg;base64,", "")
+      teacherData[e].image = deletDataImg;
+      teacherImg.src = reader.result;
+      console.log(teacherData);
+    };
+    reader.onerror = (error) => {
+     console.log('Error: ', error);
+    };
+  }
+
+  
+  const edit = (num) => {
+    const buttons = document.querySelectorAll('.teacher' + num);
+    // console.log(buttons);
+    // if (button[num].disabled) button[num].removeAttribute('disabled');
+    // else  button[num].setAttribute('disabled', '');
+    
+    for (const button of buttons) {
+      if (button.disabled) button.removeAttribute('disabled');
+      else button.setAttribute('disabled', '');
+    };
+  };
+
+  const delet = (num) => {
+    let buttons = document.getElementsByClassName('tr' + num);
+    console.log(buttons[0].cells[0].children[0].checked);
+    console.log(buttons);
+    for (let button of buttons) {
+      button.remove();
+    }
+    teacherData[num] = { _id: teacherData[num]._id };
+    console.log(buttons);
+    console.log(teacherData);    
+  }
