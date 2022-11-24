@@ -12,7 +12,8 @@ const dotenvPath = process.cwd()
 require("dotenv").config({ path: dotenvPath + "/sample.env" });
 const port = process.env.PORT;
 const uri = process.env.MONGO_URI;
-const uri_cmdb = process.env.MONGO_URI_CMDB;
+// const uri_cmdb = process.env.MONGO_URI_CMDB;
+const uri_cmdb = process.env.MONGO_URI_CMDB_SERVER_ATLAS;
 const user = process.env.EMAIL_ACCOUNT;
 const password = process.env.EMAIL_PASS;
 
