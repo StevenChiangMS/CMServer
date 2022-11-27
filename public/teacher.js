@@ -3,15 +3,18 @@ let teacherData = "";
 // get api
   const getTeacher = (e) => {
 
+    document.querySelector(".container").innerHTML = `<div>資料處理中</div>`;
+
     fetch("/api/teacher")
     .then((res) => res.json())
     .then((data) => {
       teacherData = data;
-      teacherData.map((data) => console.log(data.name));
+      // teacherData.map((data) => console.log(data.name));
+
       document.querySelector(".container").innerHTML = `
         <table class="teacherTable">
           <thead>
-            <tr>
+            <tr  class="theadTR">
               <th class="nameTh">姓名</th>
               <th class="instrumentTh">樂器</th>
               <th class="introductionTh">相片</th>
@@ -27,7 +30,7 @@ let teacherData = "";
                 <tr class="tr${index}">
                   <td><input 
                     id="teacherName${index}" 
-                    class="teacher teacher${index}" 
+                    class="teacherName teacher teacher${index}" 
                     type="text" value=${data.name} 
                     onchange=changeTeacherName(${index}) 
                     disabled /></td>
@@ -35,7 +38,7 @@ let teacherData = "";
                   <td>
                     <input 
                       id="teacherInstrument${index}" 
-                      class="teacher teacher${index}" 
+                      class="teacherInstrument teacher teacher${index}" 
                       type="text" 
                       value=${data.instrument} 
                       onchange=changeTeacherInstrument(${index}) 
@@ -65,18 +68,21 @@ let teacherData = "";
 
                   <td><textarea 
                     id="teacherIntroduction${index}" 
-                    class="teacher teacher${index}" 
+                    class="teacherIntroduction teacher teacher${index}" 
                     onchange=teacherIntroduction(${index})
                     disabled>${data.introduction}</textarea></td>
                     
-                  <td><input type="button" value="編輯" onclick="edit(${index})" /><input type="button" value="刪除" onclick=delet(${index}) /></td>
+                  <td class="td5">
+                    <input type="button" value="編輯" onclick="edit(${index})" />
+                    <input type="button" value="刪除" onclick=delet(${index}) />
+                  </td>
                 </tr>          
               `).join("")}
           </tbody>
         </table>
       `;
       if (e) alert("取得成功");
-      return console.log(teacherData);
+      return ;
     })
     .catch((err) => console.log("error:", err));
   };
@@ -85,7 +91,6 @@ let teacherData = "";
 // insert api
 
   const insertTeacher = () => {
-    console.log(teacherData);
     document.querySelector(".tbody").innerHTML += `
       <tr class="tr${teacherData.length}">
         <td><input 
@@ -140,16 +145,11 @@ let teacherData = "";
       introduction: "",
       image: ""
     });
-    console.log(teacherData);
-
   }
 
 // updata api
 
   const updata = () => {
-    // teacherData = teacherData.filter(data => data !== "")
-    console.log(teacherData);
-
     fetch("/api/teacher", {
       method: "POST",
       body: JSON.stringify({
@@ -163,8 +163,6 @@ let teacherData = "";
     .then((res) => res.json())
     .then((data) => {
       alert(data);
-      // teacherData = "";
-      console.log(teacherData);
       getTeacher();
     })
     .catch((err) => console.log("error:", err));
@@ -175,34 +173,28 @@ let teacherData = "";
   const changeTeacherName = (e) => {
     const teacherName = document.getElementById("teacherName" + e).value;
     teacherData[e].name = teacherName;
-    console.log(teacherData);
   }
 
   const changeTeacherInstrument = (e) => {
     const teacherInstrument = document.getElementById("teacherInstrument" + e).value;
     teacherData[e].instrument = teacherInstrument;
-    console.log(teacherData);
   }
 
   const teacherIntroduction = (e) => {
     const teacherIntroduction = document.getElementById("teacherIntroduction" + e).value;
     teacherData[e].introduction = teacherIntroduction;
-    console.log(teacherData);
   }
 
   const changeTeacherImg = (e) => {
-    console.log(e);
     const teacherImgInputClass = document.getElementsByClassName("teacherImgInput" + e)[0].files[0];
     const teacherImg = document.getElementById("teacherImg" + e);
 
     let reader = new FileReader();
     reader.readAsDataURL(teacherImgInputClass);
     reader.onload = () => {
-    //  console.log(reader.result);
     let deletDataImg = reader.result.replace("data:image/jpeg;base64,", "")
       teacherData[e].image = deletDataImg;
       teacherImg.src = reader.result;
-      console.log(teacherData);
     };
     reader.onerror = (error) => {
      console.log('Error: ', error);
@@ -224,12 +216,8 @@ let teacherData = "";
 
   const delet = (num) => {
     let buttons = document.getElementsByClassName('tr' + num);
-    console.log(buttons[0].cells[0].children[0].checked);
-    console.log(buttons);
     for (let button of buttons) {
       button.remove();
     }
     teacherData[num] = { _id: teacherData[num]._id };
-    console.log(buttons);
-    console.log(teacherData);    
   }

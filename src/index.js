@@ -149,7 +149,7 @@ app.get('/api/contactUs',async (req, res) => {
 app.get('/api/:instrument',async (req, res) => {
   // console.log("樂器:", req.params.instrument);
   // console.log("IP:", req.ip);
-  console.log(123);
+  console.log(req.ip);
   let dbTeacher = await TEACHER.find(
     // {instrument: req.params.instrument}
     );

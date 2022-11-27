@@ -23,19 +23,13 @@
 
   const contactDelet = (e) => {
     let buttons = document.getElementsByClassName('contactTr' + e);
-    // console.log(buttons[0].cells[0].children[0].checked);
-    console.log(buttons);
     for (let button of buttons) {
       button.remove();
     }
     contactData[e] = { _id: contactData[e]._id };
-    console.log(buttons);
-    console.log(contactData);    
   }
 
   const contactUpdata = () => {
-    console.log(contactData);    
-
     fetch("/api/contactUs", {
       method: "POST",
       body: JSON.stringify({
@@ -49,8 +43,6 @@
     .then((res) => res.json())
     .then((data) => {
       alert(data);
-      // teacherData = "";
-      console.log(contactData);
       getContact();
     })
     .catch((err) => console.log("error:", err));
@@ -59,31 +51,26 @@
   const changeContactFirstName = (e) => {
     const firstName = document.getElementById("contactFirstName" + e).value;
     contactData[e].firstName = firstName;
-    console.log(contactData);
   }
 
   const changeContactLastName = (e) => {
     const lastName = document.getElementById("contactLastName" + e).value;
     contactData[e].lastName = lastName;
-    console.log(contactData);
   }
 
   const changeContactEmail = (e) => {
     const email = document.getElementById("contactEmail" + e).value;
     contactData[e].email = email;
-    console.log(contactData);
   }
 
   const changeContactPhone = (e) => {
     const phone = document.getElementById("contactPhone" + e).value;
     contactData[e].phone = phone;
-    console.log(contactData);
   }
 
   const changeContactReqText = (e) => {
     const reqText = document.getElementById("contactReqText" + e).value;
     contactData[e].reqText = reqText;
-    console.log(contactData);
   }
 
 let contactData = "";
@@ -93,7 +80,7 @@ const getContact = (e) => {
   .then((res) => res.json())
   .then((data) => { 
     contactData = data;
-    contactData.map((data) => console.log(data));
+    // contactData.map((data) => console.log(data));
     document.querySelector(".container").innerHTML = `
     <table class="contactTable">
       <thead>
@@ -113,19 +100,21 @@ const getContact = (e) => {
       <tbody class="tbody">
         ${contactData.map((data, index) => `
           <tr class="contactTr${index}">
-            <td>
+            <td class="contactCSS">
               ${data.date}
             </td>
             <td>
               <input 
               id="contactFirstName${index}" 
-              class="contact contact${index}" 
+              class="contactCSS contact contact${index}" 
+              placeholder="first name"
               type="text" value="${data.firstName}" 
               onchange="changeContactFirstName(${index})"
               disabled />
               <input 
               id="contactLastName${index}" 
-              class="contact contact${index}" 
+              class="contactCSS contact contact${index}" 
+              placeholder="last name"
               type="text" value="${data.lastName}" 
               onchange="changeContactLastName(${index})"
               disabled />
@@ -133,7 +122,7 @@ const getContact = (e) => {
             <td>
               <input 
               id="contactEmail${index}" 
-              class="contact contact${index}" 
+              class="contactCSS contact contact${index}" 
               type="text" value="${data.email}" 
               onchange="changeContactEmail(${index})"
               disabled />
@@ -141,7 +130,7 @@ const getContact = (e) => {
             <td>
               <input 
               id="contactPhone${index}" 
-              class="contact contact${index}" 
+              class="contactCSS contact contact${index}" 
               type="text" value="${data.phone}" 
               onchange="changeContactPhone(${index})"
               disabled />
@@ -154,7 +143,7 @@ const getContact = (e) => {
               onchange="changeContactReqText(${index})"
               disabled >${data.reqText}</textarea>
             </td>
-            <td>
+            <td class="contactCSS">
               <form id="contactForm${index}" class="contactForm${index}">
               <input 
               id="contactTrue${index}" 
@@ -179,7 +168,7 @@ const getContact = (e) => {
               </form>
 
             </td>
-            <td>
+            <td class="td5">
               <input type="button" value="編輯" onclick="contactEdit(${index})" /><input type="button" value="刪除" onclick="contactDelet(${index})" />
             </td>
           </tr>
