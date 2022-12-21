@@ -2,6 +2,11 @@
 
 const express = require("express");
 const cookieParser = require('cookie-parser')
+const http = require('http');
+const https = require('https');
+
+// const prikey = fs.readFileSync('privatekey.pem', 'utf8');
+// const cert = fs.readFileSync('csrreq.pem', 'utf8');
 
 // Database
 const mongo = require("mongodb");
@@ -37,7 +42,8 @@ let storage = multer.diskStorage({
 const upload = multer({storage});
 
 const app = express();
-
+const httpServer = http.createServer(app);
+const httpsServer = https.createServer(app);
 
 app.use((req, res, next) => {
   res.cookie("hello_from_server", "hello", {
@@ -493,6 +499,13 @@ app.put("/api/update/:id", async (req, res) => {
   }
 });
 
-app.listen(port, () => {
+// app.listen(port, () => {
+//   console.log(`Listening on port http://localhost:${port}`);
+// });
+httpServer.listen(port, () => {
   console.log(`Listening on port http://localhost:${port}`);
 });
+
+// httpsServer.listen(port, () => {
+//   console.log(`Listening on port http://localhost:${port}`);
+// });
