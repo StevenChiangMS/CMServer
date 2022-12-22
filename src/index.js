@@ -5,8 +5,7 @@ const cookieParser = require('cookie-parser')
 const http = require('http');
 const https = require('https');
 
-// const prikey = fs.readFileSync('privatekey.pem', 'utf8');
-// const cert = fs.readFileSync('csrreq.pem', 'utf8');
+
 
 // Database
 const mongo = require("mongodb");
@@ -30,6 +29,13 @@ const nodemailer = require("nodemailer");
 const fs = require("fs");
 const { json } = require("body-parser");
 
+// const privateKey  = fs.readFileSync('/Users/steven/CMProject/CMServer/src/ssl/private.key');
+// const certificate = fs.readFileSync(__dirname + '/ssl/certificate.crt');
+const credentials = { 
+  key: fs.readFileSync(__dirname + '/../ssl/private.key'), 
+  cert: fs.readFileSync(__dirname + '/../ssl/certificate.crt')
+};
+
 let storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, "img");     
@@ -43,7 +49,7 @@ const upload = multer({storage});
 
 const app = express();
 const httpServer = http.createServer(app);
-const httpsServer = https.createServer(app);
+const httpsServer = https.createServer(credentials, app);
 
 app.use((req, res, next) => {
   res.cookie("hello_from_server", "hello", {
@@ -502,10 +508,11 @@ app.put("/api/update/:id", async (req, res) => {
 // app.listen(port, () => {
 //   console.log(`Listening on port http://localhost:${port}`);
 // });
-httpServer.listen(port, () => {
-  console.log(`Listening on port http://localhost:${port}`);
-});
 
-// httpsServer.listen(port, () => {
+// httpServer.listen(port, () => {
 //   console.log(`Listening on port http://localhost:${port}`);
 // });
+
+httpsServer.listen(port, () => {
+  console.log(`Listening on port https://localhost:${port}`);
+});
