@@ -509,10 +509,10 @@ app.put("/api/update/:id", async (req, res) => {
 //   console.log(`Listening on port http://localhost:${port}`);
 // });
 
-// httpServer.listen(port, () => {
-//   console.log(`Listening on port http://localhost:${port}`);
-// });
-
-httpsServer.listen(port, () => {
-  console.log(`Listening on port https://localhost:${port}`);
+httpServer.listen(port, () => {
+  console.log(`Listening on port http://localhost:${port}`);
 });
+
+// httpsServer.listen(port, () => {
+//   console.log(`Listening on port https://localhost:${port}`);
+// });
