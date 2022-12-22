@@ -15,6 +15,7 @@ const mongoose = require("mongoose");
 const dotenvPath = process.cwd()
 require("dotenv").config({ path: dotenvPath + "/sample.env" });
 const port = process.env.PORT;
+const port443 = process.env.PORT443;
 const uri = process.env.MONGO_URI;
 const uri_cmdb = process.env.MONGO_URI_CMDB;
 // const uri_cmdb = process.env.MONGO_URI_CMDB_SERVER_ATLAS;
@@ -513,6 +514,6 @@ httpServer.listen(port, () => {
   console.log(`Listening on port http://localhost:${port}`);
 });
 
-// httpsServer.listen(port, () => {
-//   console.log(`Listening on port https://localhost:${port}`);
-// });
+httpsServer.listen(port443, () => {
+  console.log(`Listening on port https://localhost:${port443}`);
+});
