@@ -49,20 +49,18 @@ let teacherData = "";
                       <img 
                         id='teacherImg${index}' 
                         class="base64image"
-                        src=${'data:image/jpeg;base64,' + data.image}
+                        src=${data.image}
                         alt=${data.name}
                       />
                     </div>
-                      <form id='test'>
-                      <input 
-                        id='teacherImgInput${index}'
-                        class="teacher teacher${index} teacherImgInput${index}" 
-                        id="imgTeacher" 
-                        type="file" 
-                        name="imgTeacher" 
-                        onchange=changeTeacherImg(${index})
-                        disabled>
-                      </form>
+                    <input 
+                      id="teacherImgInput${index}" 
+                      class="teacher teacher${index} teacherImgInput${index}" 
+                      type="text" 
+                      name="imgTeacher"
+                      value=${data.image} 
+                      onchange=changeTeacherImg(${index})
+                      disabled />
                       
                   </td>
 
@@ -81,6 +79,24 @@ let teacherData = "";
           </tbody>
         </table>
       `;
+    //   <img 
+    //   id='teacherImg${index}' 
+    //   class="base64image"
+    //   src=${'data:image/jpeg;base64,' + data.image}
+    //   alt=${data.name}
+    // />
+
+    // <form id='test'>
+    // <input 
+    //   id='teacherImgInput${index}'
+    //   class="teacher teacher${index} teacherImgInput${index}" 
+    //   id="imgTeacher" 
+    //   type="file" 
+    //   name="imgTeacher" 
+    //   onchange=changeTeacherImg(${index})
+    //   disabled>
+    // </form>
+
       if (e) alert("取得成功");
       return ;
     })
@@ -91,6 +107,7 @@ let teacherData = "";
 // insert api
 
   const insertTeacher = () => {
+    
     document.querySelector(".tbody").innerHTML += `
       <tr class="tr${teacherData.length}">
         <td><input 
@@ -116,15 +133,14 @@ let teacherData = "";
             <img 
               id='teacherImg${teacherData.length}' 
               class="base64image"
-              src=${'data:image/jpeg;base64,' + ""}
+              src=""
               alt=""
             />
           </div>
           <input 
-            id="teacherImg${teacherData.length}"
+            id="teacherImgInput${teacherData.length}"
             class="teacher teacher${teacherData.length} teacherImgInput${teacherData.length}" 
-            id="imgTeacher" 
-            type="file" 
+            type="text" 
             name="imgTeacher"
             onchange=changeTeacherImg(${teacherData.length}) 
             disabled>
@@ -145,6 +161,24 @@ let teacherData = "";
       introduction: "",
       image: ""
     });
+  //   <td>
+  //   <div class="smImgDiv">
+  //     <img 
+  //       id='teacherImg${teacherData.length}' 
+  //       class="base64image"
+  //       src=${'data:image/jpeg;base64,' + ""}
+  //       alt=""
+  //     />
+  //   </div>
+  //   <input 
+  //     id="teacherImg${teacherData.length}"
+  //     class="teacher teacher${teacherData.length} teacherImgInput${teacherData.length}" 
+  //     id="imgTeacher" 
+  //     type="file" 
+  //     name="imgTeacher"
+  //     onchange=changeTeacherImg(${teacherData.length}) 
+  //     disabled>
+  // </td>
   }
 
 // updata api
@@ -186,19 +220,22 @@ let teacherData = "";
   }
 
   const changeTeacherImg = (e) => {
-    const teacherImgInputClass = document.getElementsByClassName("teacherImgInput" + e)[0].files[0];
-    const teacherImg = document.getElementById("teacherImg" + e);
+    const teacherImgInputClass = document.getElementById("teacherImgInput" + e).value;
+    teacherData[e].image = teacherImgInputClass;
 
-    let reader = new FileReader();
-    reader.readAsDataURL(teacherImgInputClass);
-    reader.onload = () => {
-    let deletDataImg = reader.result.replace("data:image/jpeg;base64,", "")
-      teacherData[e].image = deletDataImg;
-      teacherImg.src = reader.result;
-    };
-    reader.onerror = (error) => {
-     console.log('Error: ', error);
-    };
+    // const teacherImgInputClass = document.getElementsByClassName("teacherImgInput" + e)[0].files[0];
+    // const teacherImg = document.getElementById("teacherImg" + e);
+
+    // let reader = new FileReader();
+    // reader.readAsDataURL(teacherImgInputClass);
+    // reader.onload = () => {
+    // let deletDataImg = reader.result.replace("data:image/jpeg;base64,", "")
+    //   teacherData[e].image = deletDataImg;
+    //   teacherImg.src = reader.result;
+    // };
+    // reader.onerror = (error) => {
+    //  console.log('Error: ', error);
+    // };
   }
 
   

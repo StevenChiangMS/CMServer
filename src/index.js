@@ -82,7 +82,8 @@ const teacherSchema = new Schema({
   name: { type: String, required: true },
   instrument: { type: String, required: true },
   introduction: { type: String },
-  image: { data: Buffer, type: String },
+  // image: { data: Buffer, type: String },
+  image: { type: String, required: true },
   imgType: { type: String, required: true },
 });
 const TEACHER = mongoose.model("TEACHER", teacherSchema);
@@ -365,7 +366,8 @@ app.get('/api/teacher',async (req, res) => {
   res.json(1);
 })
 
-app.post("/api/teacher", upload.single("imgTeacher"), async (req, res) => {
+// app.post("/api/teacher", upload.single("imgTeacher"), async (req, res) => {
+app.post("/api/teacher", async (req, res) => {
 
   if (req.body.updata) {
     let teacherInformation = req.body.teacherData;
@@ -446,7 +448,8 @@ app.post("/api/teacher", upload.single("imgTeacher"), async (req, res) => {
   }
 });
 
-app.put("/api/teacher", upload.single("updateImgTeacher"), async (req, res) => {
+// app.put("/api/teacher", upload.single("updateImgTeacher"), async (req, res) => {
+app.put("/api/teacher", async (req, res) => {
 
   const state = {
     instrument: req.body.instrument,
@@ -457,7 +460,7 @@ app.put("/api/teacher", upload.single("updateImgTeacher"), async (req, res) => {
     let teachername = await TEACHER.find(
       {name: req.body.teachername}
     );
-    console.log("teachername:", teachername[0].name , "END");
+    // console.log("teachername:", teachername[0].name , "END");
 
     if (teachername.length === 1) {
       let teacher = await TEACHER.findOneAndUpdate({name: teachername[0].name}, state, { new: true });
